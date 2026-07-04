@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import AppShell from '../../components/AppShell';
-
+export const dynamic = 'force-dynamic';
 function peso(n) {
   return `₱${Number(n).toFixed(2)}`;
 }
