@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 const prisma = require('../../../lib/prisma');
-
+export const dynamic = 'force-dynamic';
 function startOfDay(d) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
