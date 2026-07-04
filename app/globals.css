@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  height: 100%;
+  background-color: #F4F6F8;
+}
+
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui;
+  color: #0F1D2E;
+}
+
+h1, h2, h3, .font-display {
+  font-family: 'Sora', ui-sans-serif, system-ui;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5D9;
+  border-radius: 999px;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #receipt-print, #receipt-print * {
+    visibility: visible;
+  }
+  #receipt-print {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+}

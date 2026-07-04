@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  CASHIER
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  username  String   @unique
+  password  String   // bcrypt hash
+  role      Role     @default(CASHIER)
+  createdAt DateTime @default(now())
+  orders    Order[]
+  stockMovements StockMovement[]
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  products Product[]
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  sku         String      @unique
+  price       Decimal     @db.Decimal(10, 2)
+  cost        Decimal?    @db.Decimal(10, 2)
+  stock       Int         @default(0)
+  imageUrl    String?
+  isActive    Boolean     @default(true)
+  categoryId  Int?
+  category    Category?   @relation(fields: [categoryId], references: [id])
+  orderItems  OrderItem[]
+  stockMovements StockMovement[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([categoryId])
+}
+
+enum PaymentMethod {
+  CASH
+  GCASH
+  CARD
+}
+
+enum OrderStatus {
+  PENDING     // waiting for online payment confirmation
+  PAID
+  CANCELLED
+  REFUNDED
+}
+
+model Order {
+  id             Int         @id @default(autoincrement())
+  orderNumber    String      @unique
+  subtotal       Decimal     @db.Decimal(10, 2)
+  discount       Decimal     @db.Decimal(10, 2) @default(0)
+  taxAmount      Decimal     @db.Decimal(10, 2) @default(0)
+  total          Decimal     @db.Decimal(10, 2)
+  amountTendered Decimal?    @db.Decimal(10, 2)
+  changeDue      Decimal?    @db.Decimal(10, 2)
+  paymentMethod  PaymentMethod @default(CASH)
+  status         OrderStatus @default(PAID)
+  paymentRef     String?     // PayMongo payment intent / source id, when applicable
+  cashierId      Int?
+  cashier        User?       @relation(fields: [cashierId], references: [id])
+  items          OrderItem[]
+  createdAt      DateTime    @default(now())
+
+  @@index([cashierId])
+  @@index([status])
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  name      String  // snapshot of product name at time of sale
+  price     Decimal @db.Decimal(10, 2) // snapshot of unit price at time of sale
+  quantity  Int
+  lineTotal Decimal @db.Decimal(10, 2)
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+enum StockMovementType {
+  RESTOCK      // new stock received from a supplier
+  ADJUSTMENT   // manual correction (e.g. damaged goods, recount, loss)
+}
+
+model StockMovement {
+  id        Int               @id @default(autoincrement())
+  productId Int
+  product   Product           @relation(fields: [productId], references: [id])
+  type      StockMovementType
+  quantity  Int               // signed: +50 for a restock, -3 for a correction/loss
+  note      String?
+  userId    Int?
+  user      User?             @relation(fields: [userId], references: [id])
+  createdAt DateTime          @default(now())
+
+  @@index([productId])
+  @@index([createdAt])
+}
