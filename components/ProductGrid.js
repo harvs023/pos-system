@@ -63,8 +63,12 @@ export default function ProductGrid({ products, categories, onAdd }) {
                 disabled={p.stock <= 0}
                 className="text-left bg-white border border-gray-100 rounded-xl p-3 hover:border-peso-400 hover:shadow-panel transition disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                <div className="w-full aspect-square rounded-lg bg-peso-50 mb-2 flex items-center justify-center text-peso-500 font-display font-bold text-lg">
-                  {p.name.slice(0, 2).toUpperCase()}
+                <div className="w-full aspect-square rounded-lg bg-peso-50 mb-2 flex items-center justify-center text-peso-500 font-display font-bold text-lg overflow-hidden">
+                  {p.imageUrl ? (
+                    <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover" />
+                  ) : (
+                    p.name.slice(0, 2).toUpperCase()
+                  )}
                 </div>
                 <p className="text-sm font-medium text-ink line-clamp-2 leading-snug">{p.name}</p>
                 <div className="flex items-center justify-between mt-1">

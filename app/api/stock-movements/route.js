@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
-const prisma = require('../../../lib/prisma');
+
 export const dynamic = 'force-dynamic';
+const prisma = require('../../../lib/prisma');
+
 export async function GET() {
   const movements = await prisma.stockMovement.findMany({
     include: {

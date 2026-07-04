@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 const { getUserFromRequest } = require('../../../../lib/auth');
 
 export async function GET(request) {

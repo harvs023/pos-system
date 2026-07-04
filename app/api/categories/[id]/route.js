@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 const prisma = require('../../../../lib/prisma');
 
 export async function PUT(request, { params }) {

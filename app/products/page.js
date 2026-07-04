@@ -8,7 +8,7 @@ function peso(n) {
   return `₱${Number(n).toFixed(2)}`;
 }
 
-const emptyForm = { id: null, name: '', sku: '', price: '', cost: '', stock: '', categoryId: '' };
+const emptyForm = { id: null, name: '', sku: '', price: '', cost: '', stock: '', categoryId: '', imageUrl: '' };
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -54,6 +54,7 @@ export default function ProductsPage() {
       cost: p.cost ?? '',
       stock: p.stock,
       categoryId: p.categoryId ?? '',
+      imageUrl: p.imageUrl ?? '',
     });
     setShowForm(true);
   }
@@ -69,6 +70,7 @@ export default function ProductsPage() {
         cost: form.cost === '' ? null : Number(form.cost),
         stock: Number(form.stock || 0),
         categoryId: form.categoryId === '' ? null : Number(form.categoryId),
+        imageUrl: form.imageUrl.trim() === '' ? null : form.imageUrl.trim(),
       };
       const res = await fetch(form.id ? `/api/products/${form.id}` : '/api/products', {
         method: form.id ? 'PUT' : 'POST',
@@ -179,6 +181,7 @@ export default function ProductsPage() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
               <tr>
+                <th className="px-4 py-3"></th>
                 <th className="text-left px-4 py-3">Product</th>
                 <th className="text-left px-4 py-3">SKU</th>
                 <th className="text-left px-4 py-3">Category</th>
@@ -191,6 +194,15 @@ export default function ProductsPage() {
             <tbody className="divide-y divide-gray-100">
               {products.map((p) => (
                 <tr key={p.id} className={!p.isActive ? 'opacity-40' : ''}>
+                  <td className="px-4 py-3">
+                    <div className="w-9 h-9 rounded-md bg-peso-50 overflow-hidden flex items-center justify-center text-peso-500 font-semibold text-xs">
+                      {p.imageUrl ? (
+                        <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover" />
+                      ) : (
+                        p.name.slice(0, 2).toUpperCase()
+                      )}
+                    </div>
+                  </td>
                   <td className="px-4 py-3 font-medium text-ink">{p.name}</td>
                   <td className="px-4 py-3 text-gray-500 font-mono text-xs">{p.sku}</td>
                   <td className="px-4 py-3 text-gray-500">{p.category?.name || '—'}</td>
@@ -220,7 +232,7 @@ export default function ProductsPage() {
               ))}
               {products.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="text-center py-8 text-gray-400">
+                  <td colSpan={8} className="text-center py-8 text-gray-400">
                     No products yet. Add your first one above.
                   </td>
                 </tr>
@@ -371,6 +383,29 @@ export default function ProductsPage() {
                   onChange={(e) => setForm({ ...form, stock: e.target.value })}
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-ink mb-1">Image URL (optional)</label>
+              <div className="flex gap-3 items-start">
+                <input
+                  type="url"
+                  placeholder="https://example.com/photo.jpg"
+                  className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-peso-500"
+                  value={form.imageUrl}
+                  onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+                />
+                <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden shrink-0">
+                  {form.imageUrl ? (
+                    <img src={form.imageUrl} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[10px] text-gray-400">No image</span>
+                  )}
+                </div>
+              </div>
+              <p className="text-xs text-gray-400 mt-1">
+                Paste a link to a photo hosted elsewhere (e.g. Google Drive share link, Imgur, or your phone's cloud backup).
+              </p>
             </div>
 
             <div className="flex gap-2 pt-2">

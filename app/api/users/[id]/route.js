@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 const bcrypt = require('bcryptjs');
 const prisma = require('../../../../lib/prisma');
 const { getUserFromRequest } = require('../../../../lib/auth');

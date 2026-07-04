@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 const { COOKIE_NAME } = require('../../../../lib/auth');
 
 export async function POST() {
